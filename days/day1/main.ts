@@ -1,9 +1,8 @@
-const fs = require('fs');
-const readline = require('readline');
+import * as readline from "readline";
 
 const rl = readline.createInterface({
   input: process.stdin,
-  cflfDelay: Infinity
+  crlfDelay: Infinity
 });
 
 let depths: Array<number> = []

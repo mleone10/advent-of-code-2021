@@ -1,0 +1,21 @@
+#!/bin/bash
+
+mkdir days/day$1
+touch days/day$1/input.txt
+touch days/day$1/test.txt
+cat <<EOF >days/day$1/main.ts
+import * as readline from "readline";
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  crlfDelay: Infinity
+});
+
+let lines: Array<string> = []
+rl.on("line", (line: string) => {
+  lines.push(line);
+});
+
+rl.on("close", () => {
+});
+EOF
