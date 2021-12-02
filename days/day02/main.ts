@@ -10,21 +10,22 @@ interface Position {
   y: number
 }
 
-interface Polar {
-  pos: Position,
+interface PolarPosition extends Position {
   aim: number
 }
 
-let pos: Position = { x: 0, y: 0 }
-let polar: Polar = { pos: { x: 0, y: 0 }, aim: 0 }
+const pos: Position = { x: 0, y: 0 }
+const polar: PolarPosition = { x: 0, y: 0, aim: 0 }
+
 rl.on("line", (line: string) => {
-  let [move, dist] = line.split(" ");
-  let numDist = parseInt(dist);
+  const [move, dist] = line.split(" ");
+  const numDist = parseInt(dist);
+
   switch (move) {
     case "forward": {
       pos.x += numDist;
-      polar.pos.x += numDist;
-      polar.pos.y += numDist * polar.aim;
+      polar.x += numDist;
+      polar.y += numDist * polar.aim;
       break
     }
     case "up": {
@@ -42,5 +43,5 @@ rl.on("line", (line: string) => {
 
 rl.on("close", () => {
   console.log(pos, pos.x * pos.y)
-  console.log(polar, polar.pos.x * polar.pos.y)
+  console.log(polar, polar.x * polar.y)
 });
