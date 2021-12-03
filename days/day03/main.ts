@@ -1,4 +1,3 @@
-import { BADHINTS } from "dns";
 import * as readline from "readline";
 
 const rl = readline.createInterface({
