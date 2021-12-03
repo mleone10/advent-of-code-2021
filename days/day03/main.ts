@@ -23,6 +23,7 @@ rl.on("close", () => {
 function calcAvgs(lines: Array<Array<number>>): Array<number> {
   const avgs: Array<number> = []
   let numLines = 0
+
   for (let l of lines) {
     numLines++
     for (let i = 0; i < l.length; i++) {
@@ -30,6 +31,7 @@ function calcAvgs(lines: Array<Array<number>>): Array<number> {
       avgs[i] = cur == undefined ? l[i] : ((cur * (numLines - 1)) + l[i]) / numLines
     }
   }
+
   return avgs
 }
 
@@ -43,16 +45,17 @@ function calcPowerConsumption(lines: Array<Array<number>>): number {
     bEpsilon += mean == 1 ? 0 : 1
 
   }
+
   return parseInt(bGamma, 2) * parseInt(bEpsilon, 2)
 }
 
 function calcLifeSupport(lines: Array<Array<number>>): number {
   const bOxy = calcBit(lines, 0, (i: number) => {
-    return i == 0.5 ? 1 : Math.round(i)
+    return i >= 0.5 ? 1 : 0
   })
 
   const bC02 = calcBit(lines, 0, (i: number) => {
-    return i == 0.5 ? 0 : Math.round(i) == 1 ? 0 : 1
+    return i < 0.5 ? 1 : 0
   })
 
   return parseInt(bOxy, 2) * parseInt(bC02, 2)
@@ -61,6 +64,7 @@ function calcLifeSupport(lines: Array<Array<number>>): number {
 function calcBit(lines: Array<Array<number>>, bit: number, bitCriteria: (i: number) => number): string {
   const subLines: Array<Array<number>> = []
   const validBit = bitCriteria(calcAvgs(lines)[bit])
+
   for (let l of lines) {
     if (l[bit] == validBit) {
       subLines.push(l)
