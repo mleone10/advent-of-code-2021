@@ -1,9 +1,9 @@
 #!/bin/bash
 
-mkdir days/day$1
-touch days/day$1/input.txt
-touch days/day$1/test.txt
-cat <<EOF >days/day$1/main.ts
+mkdir src/day$1
+touch src/day$1/input.txt
+touch src/day$1/test.txt
+cat <<EOF >src/day$1/main.ts
 import * as readline from "readline";
 
 const rl = readline.createInterface({
