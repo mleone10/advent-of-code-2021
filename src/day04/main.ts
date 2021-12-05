@@ -31,7 +31,10 @@ rl.on("close", () => {
 function playBingo(nums: number[], cards: number[][][]): number {
   const called: number[] = []
 
+  // There may be some way to clean this up.  Reduce nums?
   for (const n of nums) {
+    // "Call" the next number, then check if any card won.
+    // If one has, return its score.
     called.push(n)
     const winner = cards.find(c => hasWon(called, c))
     if (winner) {
@@ -39,6 +42,7 @@ function playBingo(nums: number[], cards: number[][][]): number {
     }
   }
 
+  // If no winner found, return zero.  Shouldn't happen given well-formed inputs.
   return 0
 }
 
@@ -50,9 +54,13 @@ function hasWon(nums: number[], card: number[][]): boolean {
   const allCalled = (nums: number[], row: number[]) => row.every(i => nums.includes(i))
   const transposed = (card: number[][]) => card.map((_, i) => card.map(row => row[i]));
 
+  // Concatenate the cards rows with the card's transposed rows (thus getting an array of all rows and columns).
+  // Then check if any row has been entirely called.
   return card.concat(transposed(card)).some(r => allCalled(nums, r))
 }
 
 function calcScore(called: number[], card: number[][]): number {
-  return card.flat().filter(i => !called.find(c => c == i)).reduce((sum, current) => sum += current) * called[called.length - 1]
+  // Given a card, flatten the 2D array into a 1D array, remove any element that has been called.
+  // Then sum them up before multiplying by the last called number.
+  return card.flat().filter(i => !called.includes(i)).reduce((sum, current) => sum += current) * called[called.length - 1]
 }
