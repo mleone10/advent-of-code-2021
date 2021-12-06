@@ -28,8 +28,8 @@ rl.on("close", () => {
     }, res)
   }
 
-  console.log("Part 1:", pairs.filter(l => !diagonal(l)).reduce((res, cur) => addLineToGrid(res, cur)).reduce((res, row) => calcScore(res, row), 0))
-  console.log("Part 2", pairs.reduce((res, cur) => addLineToGrid(res, cur)).reduce((score, row) => calcScore(score, row), 0))
+  console.log("Part 1:", pairs.filter(l => !diagonal(l)).reduce((res, cur) => addLineToGrid(res, cur), []).reduce((res, row) => calcScore(res, row), 0))
+  console.log("Part 2:", pairs.reduce((res, cur) => addLineToGrid(res, cur), []).reduce((score, row) => calcScore(score, row), 0))
 })
 
 function pointsInLine(coords: number[][]): number[][] {
@@ -42,9 +42,18 @@ function pointsInLine(coords: number[][]): number[][] {
     for (let i = min(coords[0][1], coords[1][1]); i <= max(coords[0][1], coords[1][1]); i++) {
       points.push([coords[0][0], i])
     }
-  } else {
+  } else if (coords[0][1] == coords[1][1]) {
     for (let i = min(coords[0][0], coords[1][0]); i <= max(coords[0][0], coords[1][0]); i++) {
       points.push([i, coords[0][1]])
+    }
+  } else {
+    const xInc = coords[0][0] > coords[1][0] ? -1 : 1
+    const yInc = coords[0][1] > coords[1][1] ? -1 : 1
+    const cur: number[] = [coords[0][0], coords[0][1]]
+    while (cur[0] != coords[1][0] + xInc) {
+      points.push(Array.from(cur))
+      cur[0] += xInc
+      cur[1] += yInc
     }
   }
 
