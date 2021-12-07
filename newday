@@ -4,18 +4,8 @@ mkdir src/day$1
 touch src/day$1/input.txt
 touch src/day$1/test.txt
 cat <<EOF >src/day$1/main.ts
-import * as readline from "readline";
+import processStdin from "../readStdin";
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  crlfDelay: Infinity
-});
-
-let lines: Array<string> = []
-rl.on("line", (line: string) => {
-  lines.push(line);
-});
-
-rl.on("close", () => {
-});
+processStdin(ls => {
+})
 EOF
