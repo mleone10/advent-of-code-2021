@@ -7,7 +7,7 @@ processStdin(ls => {
   // For Part 1, identify the first incorrect character in each line, remove blanks (non-currupt lines), and add up the scores.
   console.log(
     "Part 1",
-    ls.map(l => findFirstIncorrectChar(l, [])).filter(c => c).map(c => charScores.get(c) || 0).reduce((sum, s) => sum + s)
+    ls.map(l => findFirstIncorrectChar(l, [])).filter(c => c).reduce((sum, s) => sum + (charScores.get(s) || 0), 0)
   )
 })
 
