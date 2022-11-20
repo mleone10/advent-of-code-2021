@@ -1,7 +1,6 @@
 package day12
 
 import (
-	"log"
 	"strings"
 	"time"
 )
@@ -9,22 +8,21 @@ import (
 type caveLabel string
 
 type Day12 struct {
-	Input              string
-	smallCaveMaxVisits int
-	system             map[caveLabel][]caveLabel
+	Input               string
+	visitSmallCaveTwice bool
+	system              map[caveLabel][]caveLabel
 }
 
 func (d Day12) SolvePartOne() (int, error) {
 	time.Sleep(time.Second * 5)
 	d.init()
-	d.smallCaveMaxVisits = 1
 
 	return d.countPaths([]caveLabel{}, caveLabel("start")), nil
 }
 
 func (d Day12) SolvePartTwo() (int, error) {
 	d.init()
-	d.smallCaveMaxVisits = 2
+	d.visitSmallCaveTwice = true
 
 	return d.countPaths([]caveLabel{}, caveLabel("start")), nil
 }
@@ -56,7 +54,6 @@ func (d *Day12) countPaths(path []caveLabel, cur caveLabel) int {
 
 	if isEndCave(cur) {
 		// We've reached the end of a valid path
-		log.Println(path)
 		return 1
 	}
 
@@ -69,7 +66,7 @@ func (d *Day12) countPaths(path []caveLabel, cur caveLabel) int {
 		}
 
 		// BUG: this allows _all_ small caves to be visited twice.  We need to remember if _any_ was visited twice.
-		if !isSmallCave(neighbor) || isLegalSmallCave(path, neighbor, d.smallCaveMaxVisits) {
+		if !isSmallCave(neighbor) || isLegalSmallCave(path, neighbor, d.visitSmallCaveTwice) {
 			paths += d.countPaths(path, neighbor)
 		}
 	}
@@ -90,29 +87,37 @@ func isSmallCave(c caveLabel) bool {
 	return strings.ToLower(cave) == string(cave)
 }
 
-func isLegalSmallCave(path []caveLabel, c caveLabel, n int) bool {
+func isLegalSmallCave(path []caveLabel, c caveLabel, visitSmallCaveTwice bool) bool {
+	if !visitSmallCaveTwice {
+		for _, visited := range path {
+			if visited == c {
+				return false
+			}
+		}
+		return true
+	}
+
 	occurences := map[caveLabel]int{}
 
+	// Count how many times each small cave has been visited
 	for _, cave := range path {
 		if !isSmallCave(cave) {
-			// We're only counting small caves.  Move on.
 			continue
 		}
 
 		occurences[cave] += 1
+	}
 
-		// If any small cave has been visited more than twice,
-		if occurences[cave] > 2 {
-			return false
+	foundTwice := false
+	for _, visitCount := range occurences {
+		if visitCount >= 2 {
+			foundTwice = true
 		}
 	}
-	// occurences := 0
 
-	// for _, cave := range path {
-	// 	if cave == c {
-	// 		occurences += 1
-	// 	}
-	// }
+	if occurences[c] >= 1 && foundTwice {
+		return false
+	}
 
-	// return occurences < n
+	return true
 }
