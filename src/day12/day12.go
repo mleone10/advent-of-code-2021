@@ -3,31 +3,34 @@ package day12
 import (
 	"log"
 	"strings"
+	"time"
 )
 
 type caveLabel string
-type path []caveLabel
 
 type Day12 struct {
-	Input  string
-	system map[caveLabel][]caveLabel
-	paths  [][]caveLabel
+	Input              string
+	smallCaveMaxVisits int
+	system             map[caveLabel][]caveLabel
 }
 
 func (d Day12) SolvePartOne() (int, error) {
+	time.Sleep(time.Second * 5)
 	d.init()
+	d.smallCaveMaxVisits = 1
 
-	d.computePaths(path{}, caveLabel("start"))
-
-	return 0, nil
+	return d.countPaths([]caveLabel{}, caveLabel("start")), nil
 }
 
 func (d Day12) SolvePartTwo() (int, error) {
 	d.init()
-	return 0, nil
+	d.smallCaveMaxVisits = 2
+
+	return d.countPaths([]caveLabel{}, caveLabel("start")), nil
 }
 
 func (d *Day12) init() {
+	// Build the adjacency list representing the cave system
 	system := map[caveLabel][]caveLabel{}
 
 	for _, link := range strings.Split(d.Input, "\n") {
@@ -48,30 +51,68 @@ func (d *Day12) init() {
 	d.system = system
 }
 
-func (d Day12) computePaths(path path, cur caveLabel) {
-	log.Printf("hello?")
-	if cur == "end" {
-		path = append(path, "end")
-		log.Printf("terminal path: %v", path)
-		d.paths = append(d.paths, path)
-		return
+func (d *Day12) countPaths(path []caveLabel, cur caveLabel) int {
+	path = append(path, cur)
+
+	if isEndCave(cur) {
+		// We've reached the end of a valid path
+		log.Println(path)
+		return 1
 	}
 
+	paths := 0
+	// Recurse through each neighbor of this one and see how many lead to valid paths
 	for _, neighbor := range d.system[cur] {
-		if neighbor.isSmallCave() && path.contains(neighbor) {
+		if isStartCave(neighbor) {
+			// If the neighbor we're considering is the start cave, move on.  Can't go back to start.
 			continue
 		}
-		path = append(path, neighbor)
-		log.Printf("continuing path: %v", path)
-		d.computePaths(path, neighbor)
+
+		// BUG: this allows _all_ small caves to be visited twice.  We need to remember if _any_ was visited twice.
+		if !isSmallCave(neighbor) || isLegalSmallCave(path, neighbor, d.smallCaveMaxVisits) {
+			paths += d.countPaths(path, neighbor)
+		}
 	}
+
+	return paths
 }
 
-func (c caveLabel) isSmallCave() bool {
+func isEndCave(c caveLabel) bool {
+	return c == "end"
+}
+
+func isStartCave(c caveLabel) bool {
+	return c == "start"
+}
+
+func isSmallCave(c caveLabel) bool {
 	cave := string(c)
 	return strings.ToLower(cave) == string(cave)
 }
 
-func (p path) contains(c caveLabel) bool {
-	return false
+func isLegalSmallCave(path []caveLabel, c caveLabel, n int) bool {
+	occurences := map[caveLabel]int{}
+
+	for _, cave := range path {
+		if !isSmallCave(cave) {
+			// We're only counting small caves.  Move on.
+			continue
+		}
+
+		occurences[cave] += 1
+
+		// If any small cave has been visited more than twice,
+		if occurences[cave] > 2 {
+			return false
+		}
+	}
+	// occurences := 0
+
+	// for _, cave := range path {
+	// 	if cave == c {
+	// 		occurences += 1
+	// 	}
+	// }
+
+	// return occurences < n
 }
