@@ -1,5 +1,28 @@
 package day14_test
 
+import (
+	"testing"
+
+	"github.com/mleone10/advent-of-code-2021/src/day14"
+	"github.com/mleone10/advent-of-code-2021/test"
+)
+
+func TestParseInput(t *testing.T) {
+	p, err := day14.NewPuzzle(testInput)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	test.AssertEquals(t, len(p.Rules), 16)
+	test.AssertEquals(t, p.Template, "NNCB")
+	test.AssertMapContainsKey(t, p.Rules, "CH")
+	test.AssertMapContainsKey(t, p.Rules, "CN")
+	test.AssertMapContainsKey(t, p.Rules, "BH")
+	test.AssertEquals(t, p.Rules["CH"], "B")
+	test.AssertEquals(t, p.Rules["CN"], "C")
+	test.AssertEquals(t, p.Rules["BH"], "H")
+}
+
 const testInput string = `NNCB
 
 CH -> B

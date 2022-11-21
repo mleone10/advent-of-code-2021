@@ -46,3 +46,15 @@ func Solve[T comparable](t *testing.T, solution Solution[T]) {
 
 	t.Logf("part two answer: %v", s2)
 }
+
+func AssertEquals[T comparable](t *testing.T, actual, expected T) {
+	if expected != actual {
+		t.Fatalf("expected %v, got %v", expected, actual)
+	}
+}
+
+func AssertMapContainsKey[T comparable, V any](t *testing.T, m map[T]V, key T) {
+	if _, ok := m[key]; !ok {
+		t.Fatalf("key %v not present in map", key)
+	}
+}
