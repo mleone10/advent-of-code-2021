@@ -23,6 +23,74 @@ func TestParseInput(t *testing.T) {
 	test.AssertEquals(t, p.Rules["BH"], "H")
 }
 
+func TestSingleStep(t *testing.T) {
+	p, err := day14.NewPuzzle(testInput)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	p.Step()
+
+	test.AssertEquals(t, p.Template, "NCNBCHB")
+}
+
+func TestFiveSteps(t *testing.T) {
+	p, err := day14.NewPuzzle(testInput)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	p.StepN(5)
+
+	test.AssertEquals(t, len(p.Template), 97)
+}
+
+func TestChecksum(t *testing.T) {
+	p, err := day14.NewPuzzle(testInput)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	p.StepN(10)
+
+	test.AssertEquals(t, p.Checksum(), 1588)
+}
+
+func TestSolvePartOne(t *testing.T) {
+	p, err := day14.NewPuzzle(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	p.StepN(10)
+
+	test.AssertEquals(t, p.Checksum(), 2602)
+}
+
+func TestFortySteps(t *testing.T) {
+	t.SkipNow()
+	p, err := day14.NewPuzzle(testInput)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	p.StepN(40)
+
+	test.AssertEquals(t, p.Checksum(), 2188189693529)
+}
+
+func TestSolvePartTwo(t *testing.T) {
+	t.SkipNow()
+	p, err := day14.NewPuzzle(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	p.StepN(40)
+
+	test.AssertEquals(t, p.Checksum(), 2602)
+}
+
 const testInput string = `NNCB
 
 CH -> B
